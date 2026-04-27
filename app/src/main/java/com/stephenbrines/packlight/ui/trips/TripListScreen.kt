@@ -1,21 +1,24 @@
 package com.stephenbrines.packlight.ui.trips
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ChevronRight
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
-import com.stephenbrines.packlight.data.model.Trip
 import com.stephenbrines.packlight.data.model.TerrainType
-import com.stephenbrines.packlight.data.model.TripStatus
+import com.stephenbrines.packlight.data.model.Trip
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -26,7 +29,6 @@ fun TripListScreen(
 ) {
     val trips by viewModel.filteredTrips.collectAsStateWithLifecycle()
     var showAddSheet by remember { mutableStateOf(false) }
-    var selectedTrip by remember { mutableStateOf<Trip?>(null) }
 
     Scaffold(
         modifier = Modifier.padding(padding),
@@ -37,25 +39,36 @@ fun TripListScreen(
             }
         }
     ) { innerPadding ->
-        LazyColumn(Modifier.padding(innerPadding)) {
-            items(trips, key = { it.id }) { trip ->
-                ListItem(
-                    headlineContent = { Text(trip.name) },
-                    supportingContent = {
-                        Text("${trip.formattedDateRange} · ${trip.terrain.displayName}")
-                    },
-                    trailingContent = {
-                        Row(verticalAlignment = androidx.compose.ui.Alignment.CenterVertically) {
-                            SuggestionChip(
-                                onClick = {},
-                                label = { Text(trip.status.displayName, style = MaterialTheme.typography.labelSmall) },
-                            )
-                            Icon(Icons.Default.ChevronRight, null)
-                        }
-                    },
-                    modifier = Modifier.padding(0.dp)
-                )
-                HorizontalDivider()
+        if (trips.isEmpty()) {
+            Box(Modifier.padding(innerPadding).fillMaxSize(), contentAlignment = Alignment.Center) {
+                Text("No trips yet. Tap + to plan one.", style = MaterialTheme.typography.bodyLarge)
+            }
+        } else {
+            LazyColumn(Modifier.padding(innerPadding)) {
+                items(trips, key = { it.id }) { trip ->
+                    ListItem(
+                        headlineContent = { Text(trip.name) },
+                        supportingContent = {
+                            Text("${trip.formattedDateRange} · ${trip.terrain.displayName}")
+                        },
+                        trailingContent = {
+                            Row(verticalAlignment = Alignment.CenterVertically) {
+                                SuggestionChip(
+                                    onClick = {},
+                                    label = {
+                                        Text(trip.status.displayName,
+                                             style = MaterialTheme.typography.labelSmall)
+                                    },
+                                )
+                                Icon(Icons.Default.ChevronRight, null)
+                            }
+                        },
+                        modifier = Modifier.clickable {
+                            navController.navigate("trip/${trip.id}")
+                        },
+                    )
+                    HorizontalDivider()
+                }
             }
         }
     }
@@ -82,10 +95,7 @@ private fun AddTripSheet(onDismiss: () -> Unit, onSave: (Trip) -> Unit) {
 
     ModalBottomSheet(onDismissRequest = onDismiss) {
         Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp)
-                .padding(bottom = 32.dp),
+            modifier = Modifier.fillMaxWidth().padding(16.dp).padding(bottom = 32.dp),
             verticalArrangement = Arrangement.spacedBy(12.dp),
         ) {
             Text("New Trip", style = MaterialTheme.typography.titleLarge)
@@ -98,20 +108,18 @@ private fun AddTripSheet(onDismiss: () -> Unit, onSave: (Trip) -> Unit) {
 
             OutlinedTextField(value = distanceStr, onValueChange = { distanceStr = it },
                 label = { Text("Distance (miles)") }, modifier = Modifier.fillMaxWidth(), singleLine = true,
-                keyboardOptions = androidx.compose.foundation.text.KeyboardOptions(
-                    keyboardType = androidx.compose.ui.text.input.KeyboardType.Decimal))
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal))
 
-            // Terrain picker
-            var expanded by remember { mutableStateOf(false) }
-            ExposedDropdownMenuBox(expanded = expanded, onExpandedChange = { expanded = it }) {
+            var terrainExpanded by remember { mutableStateOf(false) }
+            ExposedDropdownMenuBox(expanded = terrainExpanded, onExpandedChange = { terrainExpanded = it }) {
                 OutlinedTextField(value = terrain.displayName, onValueChange = {}, readOnly = true,
                     label = { Text("Terrain") },
-                    trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded) },
+                    trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(terrainExpanded) },
                     modifier = Modifier.menuAnchor().fillMaxWidth())
-                ExposedDropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
+                ExposedDropdownMenu(expanded = terrainExpanded, onDismissRequest = { terrainExpanded = false }) {
                     TerrainType.entries.forEach { t ->
                         DropdownMenuItem(text = { Text(t.displayName) },
-                            onClick = { terrain = t; expanded = false })
+                            onClick = { terrain = t; terrainExpanded = false })
                     }
                 }
             }
