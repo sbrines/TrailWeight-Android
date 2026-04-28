@@ -4,6 +4,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Backpack
 import androidx.compose.material.icons.filled.Map
 import androidx.compose.material.icons.filled.Scale
+import androidx.compose.material.icons.filled.CloudSync
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
@@ -16,6 +17,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.stephenbrines.trailweight.ui.gear.GearListScreen
+import com.stephenbrines.trailweight.ui.settings.SyncSettingsScreen
 import com.stephenbrines.trailweight.ui.trips.PackListScreen
 import com.stephenbrines.trailweight.ui.trips.TripDetailScreen
 import com.stephenbrines.trailweight.ui.trips.TripListScreen
@@ -29,6 +31,7 @@ sealed class Screen(val route: String, val label: String) {
     object Gear : Screen("gear", "Gear")
     object Trips : Screen("trips", "Trips")
     object Weight : Screen("weight", "Weight")
+    object Sync : Screen("sync", "Sync")
 }
 
 @Composable
@@ -37,8 +40,8 @@ fun TrailWeightNavHost() {
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentDest = navBackStackEntry?.destination
 
-    val tabs = listOf(Screen.Gear, Screen.Trips, Screen.Weight)
-    val tabIcons = listOf(Icons.Default.Backpack, Icons.Default.Map, Icons.Default.Scale)
+    val tabs = listOf(Screen.Gear, Screen.Trips, Screen.Weight, Screen.Sync)
+    val tabIcons = listOf(Icons.Default.Backpack, Icons.Default.Map, Icons.Default.Scale, Icons.Default.CloudSync)
 
     // Only show bottom nav on top-level destinations
     val topLevelRoutes = tabs.map { it.route }.toSet()
@@ -75,6 +78,9 @@ fun TrailWeightNavHost() {
             }
             composable(Screen.Weight.route) {
                 WeightDashboardScreen(padding)
+            }
+            composable(Screen.Sync.route) {
+                SyncSettingsScreen()
             }
             composable(
                 route = "trip/{tripId}",

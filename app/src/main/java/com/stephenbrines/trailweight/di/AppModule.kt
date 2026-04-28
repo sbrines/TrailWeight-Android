@@ -2,6 +2,8 @@ package com.stephenbrines.trailweight.di
 
 import android.content.Context
 import androidx.room.Room
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
 import com.stephenbrines.trailweight.data.db.TrailWeightDatabase
 import com.stephenbrines.trailweight.data.db.dao.GearItemDao
 import com.stephenbrines.trailweight.data.db.dao.PackListDao
@@ -23,6 +25,9 @@ object AppModule {
         Room.databaseBuilder(context, TrailWeightDatabase::class.java, "trailweight.db")
             .fallbackToDestructiveMigration()
             .build()
+
+    @Provides @Singleton fun provideFirestore(): FirebaseFirestore = FirebaseFirestore.getInstance()
+    @Provides @Singleton fun provideFirebaseAuth(): FirebaseAuth = FirebaseAuth.getInstance()
 
     @Provides fun provideGearItemDao(db: TrailWeightDatabase): GearItemDao = db.gearItemDao()
     @Provides fun provideTripDao(db: TrailWeightDatabase): TripDao = db.tripDao()

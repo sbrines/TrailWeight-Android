@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "389768001102",
+    "project_id": "trailweight-74abe",
+    "storage_bucket": "trailweight-74abe.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:389768001102:android:d7daac6579cba720a4751f",
+        "android_client_info": {
+          "package_name": "com.stephenbrines.trailweight"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC72ozJn3BVKWseGZ6ahqdCerZCboTvZqM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
