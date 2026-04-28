@@ -56,9 +56,6 @@ class AuthRepository @Inject constructor(
     }
 
     companion object {
-        // Replace with your OAuth 2.0 Web Client ID from Firebase console →
-        // Project Settings → General → Your apps → Web app → Client ID
-        // OR from Google Cloud Console → APIs & Services → Credentials
-        const val WEB_CLIENT_ID = "YOUR_WEB_CLIENT_ID_HERE"
+        const val WEB_CLIENT_ID = "389768001102-oulhfnbd9e1rqm8e0k6kngbn1i2mssk2.apps.googleusercontent.com"
     }
 }
