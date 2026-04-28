@@ -6,7 +6,7 @@ import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface TripDao {
-    @Query("SELECT * FROM trips ORDER BY startDateMs ASC NULLS LAST")
+    @Query("SELECT * FROM trips ORDER BY startDateMs ASC")
     fun getAll(): Flow<List<Trip>>
 
     @Query("SELECT * FROM trips WHERE id = :id")
