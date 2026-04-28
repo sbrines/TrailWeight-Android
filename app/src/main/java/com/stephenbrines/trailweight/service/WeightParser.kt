@@ -13,14 +13,14 @@ object WeightParser {
 
     // "4 oz / 113g", "4 oz (113 g)", "19.0 oz (539 g)" — prefer grams component
     private fun parseDualFormat(s: String): Double? {
-        if (!s.contains("oz", ignoreCase = true)) return null
+        if (!s.contains(Regex("""oz|ounce""", RegexOption.IGNORE_CASE))) return null
         val pattern = Regex("""(\d+(?:\.\d+)?)\s*g(?:ram[s]?)?\b""", RegexOption.IGNORE_CASE)
         return pattern.find(s)?.groupValues?.get(1)?.toDoubleOrNull()
     }
 
     // "119g", "119 g", "539 grams"
     private fun parseGramsOnly(s: String): Double? {
-        if (s.contains("oz", ignoreCase = true)) return null
+        if (s.contains(Regex("""oz|ounce""", RegexOption.IGNORE_CASE))) return null
         val pattern = Regex("""^(\d+(?:\.\d+)?)\s*g(?:ram[s]?)?\b""", RegexOption.IGNORE_CASE)
         return pattern.find(s)?.groupValues?.get(1)?.toDoubleOrNull()
     }
@@ -40,7 +40,7 @@ object WeightParser {
     // "4.2 oz", "4 ounces"
     private fun parseOuncesOnly(s: String): Double? {
         if (s.contains(Regex("""lbs?""", RegexOption.IGNORE_CASE))) return null
-        val pattern = Regex("""(\d+(?:\.\d+)?)\s*oz(?:ounce[s]?)?""", RegexOption.IGNORE_CASE)
+        val pattern = Regex("""(\d+(?:\.\d+)?)\s*(?:oz|ounce[s]?)\b""", RegexOption.IGNORE_CASE)
         return pattern.find(s)?.groupValues?.get(1)?.toDoubleOrNull()?.let { it * 28.3495 }
     }
 
