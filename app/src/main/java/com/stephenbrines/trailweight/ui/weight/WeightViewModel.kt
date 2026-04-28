@@ -12,6 +12,7 @@ import com.stephenbrines.trailweight.service.WeightCalculator
 import com.stephenbrines.trailweight.service.WeightSummary
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*
 import javax.inject.Inject
 
